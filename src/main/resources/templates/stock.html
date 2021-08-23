@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" xmlns:th="http//www.thymeleaf.org"
+	th:replace="base::layout(~{::section})">
+<head>
+<meta charset="UTF-8" />
+<title>Document</title>
+</head>
+<body>
+	<section>
+		<section id="container" class="">
+			
+			<!--main content start-->
+			<section id="main-content">
+				<section class="wrapper">
+					<div class="row">
+						<div class="col-lg-12">
+							<h3 class="page-header">
+								<i class="icon_piechart"></i>Stock
+							</h3>
+							<ol class="breadcrumb">
+								<li><i class="fa fa-home"></i><a href="index.html">Home</a></li>
+								<li><i class="icon_piechart"></i>Stock</li>
+
+							</ol>
+						</div>
+					</div>
+					<div class="row">
+						<!-- chart start -->
+						<div class="col-lg-12">
+							<section class="panel">
+								<header class="panel-heading">
+									<h3>General Stock</h3>
+								</header>
+								<div class="panel-body">
+									<div class="tab-pane" id="chartjs">
+										<div class="row">
+											<!-- Line -->
+											<div class="col-lg-6">
+												<section class="panel">
+													<header class="panel-heading"> Line </header>
+													<div class="panel-body text-center">
+														<canvas id="line" height="300" width="450"></canvas>
+													</div>
+												</section>
+											</div>
+											<div class="col-lg-6">
+												<section class="panel">
+													<header class="panel-heading"> Doughnut </header>
+													<div class="panel-body text-center">
+														<canvas id="doughnut" height="300" width="400"></canvas>
+													</div>
+												</section>
+											</div>
+
+										</div>
+
+										<div class="row">
+
+											
+											<!-- Doughnut -->
+
+										</div>
+									</div>
+								</div>
+							</section>
+						</div>
+					</div>
+				</section>
+
+			</section>
+			<!--main content end-->
+			
+		</section>
+
+
+	</section>
+
+
+	<div class="text-right">
+		<div class="credits">
+
+			Designed by <a href="https://shivit.com/">Shivit Technology</a>
+		</div>
+	</div>
+
+
+
+</body>
+</html>
