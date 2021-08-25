@@ -1,5 +1,6 @@
 package com.product.managment.webapp.controllers;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.product.managment.webapp.entities.FromDate;
+import com.product.managment.webapp.entities.ResponseFromDate;
 import com.product.managment.webapp.entities.Stock;
 import com.product.managment.webapp.entities.TransactionDetail;
 import com.product.managment.webapp.entities.TransactionHead;
+import com.product.managment.webapp.repositories.TransactionHeadRepository;
 import com.product.managment.webapp.services.StockService;
 import com.product.managment.webapp.services.TransactionHeadService;
 
@@ -29,6 +33,8 @@ public class TransactionHeadController {
 
 	@Autowired
 	private StockService stockService;
+	
+	
 
 	/* create transactionHead */
 
@@ -40,6 +46,8 @@ public class TransactionHeadController {
 		if (storedId != null) {
 			List<TransactionDetail> tranDetail = transactionHead.getTransactionDetails();
 
+			/* inward transaction */
+			
 			if (transactionHead.getType().equals("inward")) {
 				for (TransactionDetail txn : tranDetail) {
 
@@ -51,8 +59,12 @@ public class TransactionHeadController {
 							if (getStock != null) {
 								double currentQuantity = txn.getQuantity() + getStock.getQuantity();
 								getStock.setQuantity(currentQuantity);
-								getStock.setRate(txn.getRate());
+								getStock.setRate(txn.getTotalAmount()/txn.getQuantity());
 								// getStock.setId();
+								
+								double averageAmount= (getStock.getRate()*getStock.getQuantity()+txn.getRate()*txn.getQuantity())/getStock.getQuantity()+txn.getQuantity();
+								getStock.setRate(averageAmount);
+								
 								this.stockService.saveStock(getStock);
 							} else {
 								Stock stock = new Stock();
@@ -61,14 +73,17 @@ public class TransactionHeadController {
 								stock.setProductId(txn.getProductId());
 								stock.setSpecifictionId(txn.getSpecId());
 								stock.setRate(txn.getRate());
-
+								
+								
 								stockService.saveStock(stock);
 							}
 
 						}
 					}
 				}
-
+					
+				/* outward transaction */
+				
 			} else if (transactionHead.getType().equals("outward")) {
 
 				for (TransactionDetail txn : tranDetail) {
@@ -82,7 +97,8 @@ public class TransactionHeadController {
 							if (getStock != null) {
 								double currentQuantity = getStock.getQuantity()-txn.getQuantity() ;
 								getStock.setQuantity(currentQuantity);
-								getStock.setRate(txn.getRate());
+								
+								
 								// getStock.setId();
 								this.stockService.saveStock(getStock);
 							}
@@ -93,6 +109,8 @@ public class TransactionHeadController {
 
 				}
 			}
+		
+			
 
 		}
 		return transactionHeadService.insert(transactionHead);
@@ -126,5 +144,29 @@ public class TransactionHeadController {
 		transactionHeadService.deleteTransaction(id);
 
 	}
-
+	
+	@PostMapping("/fromdate")
+		public ResponseFromDate fromDate(@RequestBody FromDate fromDate  ) throws ParseException {
+		//	List<TransactionHead> result= transactionHeadRepository.findAllWithCreationDateTimeBefore(new SimpleDateFormat("yyyy-MM-dd").parse("2021-07-11"));
+			//System.out.println(result);
+			/*
+			 * for(TransactionHead rst : result) { System.out.println(rst.getId());
+			 * 
+			 * }
+			 */
+			
+			
+			
+			return transactionHeadService.formDate(fromDate.getProductId(), fromDate.getStoreId(), fromDate.getDate());
+			
+		}
+	
+	@PostMapping("/betweendate")
+	public void betweenDate(@RequestBody FromDate fromDate  ) throws ParseException {
+		
+	transactionHeadService.betweenDate(fromDate.getProductId(), fromDate.getStoreId(), fromDate.getStartDate(),fromDate.getEndDate());
+		
+	}
+	
+	
 }
