@@ -1,30 +1,36 @@
 package com.product.managment.webapp.controllers;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.product.managment.webapp.entities.FromDate;
+import com.product.managment.webapp.entities.Product;
 import com.product.managment.webapp.entities.ResponseFromDate;
 import com.product.managment.webapp.entities.Stock;
+import com.product.managment.webapp.entities.StockLedger;
 import com.product.managment.webapp.entities.TransactionDetail;
 import com.product.managment.webapp.entities.TransactionHead;
-import com.product.managment.webapp.repositories.TransactionHeadRepository;
+import com.product.managment.webapp.services.ProductService;
 import com.product.managment.webapp.services.StockService;
+import com.product.managment.webapp.services.StoreService;
 import com.product.managment.webapp.services.TransactionHeadService;
 
-@RestController
-@RequestMapping("/transactionhead")
+@Controller
+//@RequestMapping("/transactionhead")
 @EnableTransactionManagement
 public class TransactionHeadController {
 
@@ -34,6 +40,11 @@ public class TransactionHeadController {
 	@Autowired
 	private StockService stockService;
 	
+	@Autowired
+	private ProductService productService;
+	
+	@Autowired
+	private StoreService storeService;
 	
 
 	/* create transactionHead */
@@ -154,9 +165,7 @@ public class TransactionHeadController {
 			 * 
 			 * }
 			 */
-			
-			
-			
+		
 			return transactionHeadService.formDate(fromDate.getProductId(), fromDate.getStoreId(), fromDate.getDate());
 			
 		}
@@ -167,6 +176,37 @@ public class TransactionHeadController {
 	transactionHeadService.betweenDate(fromDate.getProductId(), fromDate.getStoreId(), fromDate.getStartDate(),fromDate.getEndDate());
 		
 	}
+	
+	
+	@GetMapping("/ledger")
+	 public String getLedger(Model model) {
+		 
+		List<Product> productList= productService.allProducts();
+		model.addAttribute("productList", productList);
+		model.addAttribute("storeList", storeService.getAllStoreList());
+		
+		model.addAttribute("stockLedger", new StockLedger());
+		
+		 return "ledger";
+	 }
+	
+	@PostMapping("/stockLedger")
+	public String stockLedgerList(@ModelAttribute("stockLedger")StockLedger stockLedger) {
+	//	Date fromDate =  new SimpleDateFormat(stockLedger.getFromDate()).parse(source)
+
+		//transactionHeadService.betweenDate(stockLedger.getProductId(), stockLedger.getStoreId(), new SimpleDateFormat( stockLedger.getFromDate()), new SimpleDateFormat (stockLedger.getToDate()));
+		
+		
+		System.out.println(stockLedger.getProductId());
+		System.out.println(stockLedger.getStoreId());
+		System.out.println(stockLedger.getFromDate());
+		System.out.println(stockLedger.getToDate());
+		
+	
+		
+		return "redirect:/ledger";
+	}
+	
 	
 	
 }

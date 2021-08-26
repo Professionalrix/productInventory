@@ -17,4 +17,8 @@ public interface TransactionHeadRepository extends JpaRepository<TransactionHead
 	
 	 @Query("from com.product.managment.webapp.entities.TransactionHead a where a.transactionDate>=:startDate and a.transactionDate<=:endDate and a.storeId=:storeId")
 	 List<TransactionHead> findAllWithTransactionDateBetween( Date startDate,Date endDate,Long storeId);
+	 
+	 //@Query("from com.product.managment.webapp.entities.TransactionHead a where a.transactionDate>=:startDate and a.transactionDate<=:endDate and a.storeId=:storeId")
+	// List<TransactionHead> transactionBetweenDate(String startDate,String endDate,Long storeId);
+
 }

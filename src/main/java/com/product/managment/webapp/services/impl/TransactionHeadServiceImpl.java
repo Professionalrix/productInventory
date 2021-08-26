@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.product.managment.webapp.entities.ResponseFromDate;
+import com.product.managment.webapp.entities.StockLedger;
 import com.product.managment.webapp.entities.TransactionDetail;
 import com.product.managment.webapp.entities.TransactionHead;
 import com.product.managment.webapp.repositories.TransactionDetailRepository;
@@ -25,7 +26,6 @@ public class TransactionHeadServiceImpl implements TransactionHeadService {
 	private TransactionDetailRepository transactionDetailRepository;
 	
 	
-
 	@Override
 	@Transactional
 	public TransactionHead insert(TransactionHead transactionHead) {
@@ -78,8 +78,7 @@ public class TransactionHeadServiceImpl implements TransactionHeadService {
 			}
 
 		}
-		// double net= inwardQuantity - outwardQuantity;
-
+		
 		System.out.println("Total inward :" + inwardQuantity);
 		System.out.println("Total outward :" + outwardQuantity);
 		System.out.println("Net Quantity : " + (inwardQuantity - outwardQuantity));
@@ -120,6 +119,13 @@ public class TransactionHeadServiceImpl implements TransactionHeadService {
 		System.out.println("Net Quantity :" +(inwardQuantity-outwardQuantity));
 	}
 
-
+	@Override
+	public void transactionBetweenDate(StockLedger stockLedger) {
+		double inwardQuantity = 0;
+		double outwardQuantity = 0;
+		//List<TransactionHead> txnHead = transactionHeadRepository.transactionBetweenDate(stockLedger.getFromDate(),stockLedger.getToDate(),stockLedger.getStoreId()); 
+		System.out.println("hello");	
+		
+	}
 
 }
