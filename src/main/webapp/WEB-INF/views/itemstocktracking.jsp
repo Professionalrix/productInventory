@@ -6,13 +6,12 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Stock Ledger</title>
+<title>Product Stock Tracking</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-	
 		<div class ="container">
-		<form:form action="stockLedger" method="post" modelAttribute="stockLedger">
+		<form:form action="stocktracking" method="post" modelAttribute="stockLedger">
 		<div class="row">
 			<div class="col-2 mt-4">
 				<label for="fromDate">From Date:</label> <form:input type="date"
@@ -48,55 +47,46 @@
 				<a href="#" class="btn btn-success">Export Excel</a>
 			</div>
 			
-			
 		</div>
 		
 		</form:form>
-	
-
-
 	</div>
-	
 	<!-- stock ledger -->
-	
 	<div class="container-fluid mt-3">
 	
 	  <table class="table table-striped table-advance table-hover">
                 <tbody>
                   <tr>
-                    <th><i class="icon_profile"></i> Product Code</th>
-                    <th><i class="icon_calendar"></i>Product Name</th>
-                    <th><i class="icon_mail_alt"></i> Unit</th>
-                    <th><i class="icon_pin_alt"></i> Op.Stock</th>
-                    <th><i class="icon_mobile"></i> In.Qty</th>
-                    <th><i class="icon_cogs"></i> Out.Qty</th>
-                     <th><i class="icon_cogs"></i>Cls Stock</th>
-                     <th><i class="icon_cogs"></i>Supplier/Manufacture</th>
+                    <th><i class="icon_profile"></i> Date</th>
+                    <th><i class="icon_calendar"></i>Transaction No</th>
+                    <th><i class="icon_mobile"></i>Unit</th>
+                    <th><i class="icon_pin_alt"></i>In.Qty</th>
+                    <th><i class="icon_cogs"></i> Out Qty</th>
+                     <th><i class="icon_cogs"></i>Cls Qty</th>
+                     <th><i class="icon_cogs"></i>Transaction Type</th>
                   </tr>
-                
-                		
-                  <tr>
-                  	<td>DCN00000${response.productId}</td>
-                    <td>${response.productName}</td>
-                    <td>PCS</td>
-                   	<td>null </td>
-                    <td>${response.inwardQuantity}</td>
-                    <td>${response.outwardQwantity}</td>
-                    <td>${response.closingStock}</td>
-                
+                    <tr>
+                    <td></td>
+                    <td></td>
+                    <td><strong>Opening Stock</strong></td>
+                    <td>${closingStock}</td>
+                    	
+                    </tr>
+                    <c:forEach items="${responseList}" var="response">
+                    <tr >
+                  	 <td>${response.transactionDate}</td> 
+                    <td>${response.transactionNo}</td>
+                     <td>${response.unit} </td>
+                    <td>${response.inQuantity}</td>
+                    <td>${response.outQuantity}</td>
+                    <td>${response.transcationType}</td>
+                    <%-- <td>${response.closingStock}</td> --%>
                   	<!-- <td>Null</td> -->
-                  	<td>${response.supplierName}</td>
+                  	<%-- <td>${response.supplierName}</td> --%>
                   </tr>
-             
+                  </c:forEach>
                 </tbody>
               </table>
-	
-	</div>
-	
-	
-		 
-		 
-	
-
-</body>
+		</div>
+		</body>
 </html>

@@ -23,6 +23,8 @@ import com.product.managment.webapp.entities.StockLedger;
 import com.product.managment.webapp.entities.TransactionDetail;
 import com.product.managment.webapp.entities.TransactionHead;
 import com.product.managment.webapp.model.ResponseClass;
+import com.product.managment.webapp.model.ResponseStockTracking;
+import com.product.managment.webapp.repositories.TransactionHeadRepository;
 import com.product.managment.webapp.services.ProductService;
 import com.product.managment.webapp.services.StockService;
 import com.product.managment.webapp.services.StoreService;
@@ -38,13 +40,15 @@ public class TransactionHeadController {
 
 	@Autowired
 	private StockService stockService;
-	
+
 	@Autowired
 	private ProductService productService;
-	
+
 	@Autowired
 	private StoreService storeService;
-	
+
+	@Autowired
+	private TransactionHeadRepository transactionHeadRepository;
 
 	/* create transactionHead */
 
@@ -57,7 +61,7 @@ public class TransactionHeadController {
 			List<TransactionDetail> tranDetail = transactionHead.getTransactionDetails();
 
 			/* inward transaction */
-			
+
 			if (transactionHead.getType().equals("inward")) {
 				for (TransactionDetail txn : tranDetail) {
 
@@ -69,12 +73,14 @@ public class TransactionHeadController {
 							if (getStock != null) {
 								double currentQuantity = txn.getQuantity() + getStock.getQuantity();
 								getStock.setQuantity(currentQuantity);
-								getStock.setRate(txn.getTotalAmount()/txn.getQuantity());
+								getStock.setRate(txn.getTotalAmount() / txn.getQuantity());
 								// getStock.setId();
-								
-								double averageAmount= (getStock.getRate()*getStock.getQuantity()+txn.getRate()*txn.getQuantity())/getStock.getQuantity()+txn.getQuantity();
+
+								double averageAmount = (getStock.getRate() * getStock.getQuantity()
+										+ txn.getRate() * txn.getQuantity()) / getStock.getQuantity()
+										+ txn.getQuantity();
 								getStock.setRate(averageAmount);
-								
+
 								this.stockService.saveStock(getStock);
 							} else {
 								Stock stock = new Stock();
@@ -83,17 +89,16 @@ public class TransactionHeadController {
 								stock.setProductId(txn.getProductId());
 								stock.setSpecifictionId(txn.getSpecId());
 								stock.setRate(txn.getRate());
-								
-								
+
 								stockService.saveStock(stock);
 							}
 
 						}
 					}
 				}
-					
+
 				/* outward transaction */
-				
+
 			} else if (transactionHead.getType().equals("outward")) {
 
 				for (TransactionDetail txn : tranDetail) {
@@ -105,10 +110,9 @@ public class TransactionHeadController {
 						if (txn.getQuantity() > 0 && getStock.getQuantity() > txn.getQuantity()) {
 
 							if (getStock != null) {
-								double currentQuantity = getStock.getQuantity()-txn.getQuantity() ;
+								double currentQuantity = getStock.getQuantity() - txn.getQuantity();
 								getStock.setQuantity(currentQuantity);
-								
-								
+
 								// getStock.setId();
 								this.stockService.saveStock(getStock);
 							}
@@ -119,8 +123,6 @@ public class TransactionHeadController {
 
 				}
 			}
-		
-			
 
 		}
 		return transactionHeadService.insert(transactionHead);
@@ -154,67 +156,82 @@ public class TransactionHeadController {
 		transactionHeadService.deleteTransaction(id);
 
 	}
-	
-	@PostMapping("/fromdate")
-		public ResponseFromDate fromDate(@RequestBody FromDate fromDate  ) throws ParseException {
-		//	List<TransactionHead> result= transactionHeadRepository.findAllWithCreationDateTimeBefore(new SimpleDateFormat("yyyy-MM-dd").parse("2021-07-11"));
-			//System.out.println(result);
-			/*
-			 * for(TransactionHead rst : result) { System.out.println(rst.getId());
-			 * 
-			 * }
-			 */
-		
-			return transactionHeadService.formDate(fromDate.getProductId(), fromDate.getStoreId(), fromDate.getDate());
-			
-		}
-	
-	@PostMapping("/betweendate")
-	public void betweenDate(@RequestBody FromDate fromDate  ) throws ParseException {
-		
-	transactionHeadService.betweenDate(fromDate.getProductId(), fromDate.getStoreId(), fromDate.getStartDate(),fromDate.getEndDate());
-		
-	}
-	
-	
-	@GetMapping("/ledger")
-	 public String getLedger(Model model) {
-		 
-		List<Product> productList= productService.allProducts();
-		model.addAttribute("productList", productList);
-		model.addAttribute("storeList", storeService.getAllStoreList());
-		
-		model.addAttribute("stockLedger", new StockLedger());
-		
-		 return "ledger";
-	 }
-	
-	@PostMapping("/stockLedger")
-	public String stockLedgerList( @ModelAttribute("stockLedger")StockLedger stockLedger,Model model) {
-	//	Date fromDate =  new SimpleDateFormat(stockLedger.getFromDate()).parse(source)
 
-		
-		
-		
-		ResponseClass response= transactionHeadService.betweenDate(stockLedger.getProductId(), stockLedger.getStoreId(), stockLedger.getFromDate(), stockLedger.getToDate());
-		
-		
-//		System.out.println(stockLedger.getProductId());
-//		System.out.println(stockLedger.getStoreId());
-//		System.out.println(stockLedger.getFromDate());
-//		System.out.println(stockLedger.getToDate());
-		model.addAttribute("response",response);
-	
-		 
-		List<Product> productList= productService.allProducts();
+	/*
+	 * @PostMapping("/fromdate") public ResponseFromDate fromDate(@RequestBody
+	 * FromDate fromDate ) throws ParseException { // List<TransactionHead> result=
+	 * transactionHeadRepository.findAllWithCreationDateTimeBefore(new
+	 * SimpleDateFormat("yyyy-MM-dd").parse("2021-07-11"));
+	 * //System.out.println(result);
+	 * 
+	 * for(TransactionHead rst : result) { System.out.println(rst.getId());
+	 * 
+	 * }
+	 * 
+	 * 
+	 * return transactionHeadService.formDate(fromDate.getProductId(),
+	 * fromDate.getStoreId(), fromDate.getDate());
+	 * 
+	 * }
+	 */
+
+	@PostMapping("/betweendate")
+	public void betweenDate(@RequestBody FromDate fromDate) throws ParseException {
+
+		transactionHeadService.betweenDate(fromDate.getProductId(), fromDate.getStoreId(), fromDate.getStartDate(),
+				fromDate.getEndDate());
+
+	}
+
+	@GetMapping("/ledger")
+	public String getLedger(Model model) {
+
+		List<Product> productList = productService.allProducts();
 		model.addAttribute("productList", productList);
 		model.addAttribute("storeList", storeService.getAllStoreList());
-		
 		model.addAttribute("stockLedger", new StockLedger());
-		
-	return "ledger";
+		return "ledger";
 	}
-	
-	
-	
+
+	@PostMapping("/stockLedger")
+	public String stockLedgerList(@ModelAttribute("stockLedger") StockLedger stockLedger, Model model) {
+		// Date fromDate = new SimpleDateFormat(stockLedger.getFromDate()).parse(source)
+		ResponseClass response = transactionHeadService.betweenDate(stockLedger.getProductId(),
+				stockLedger.getStoreId(), stockLedger.getFromDate(), stockLedger.getToDate());
+		model.addAttribute("response", response);
+
+		List<Product> productList = productService.allProducts();
+		model.addAttribute("productList", productList);
+		model.addAttribute("storeList", storeService.getAllStoreList());
+		model.addAttribute("stockLedger", new StockLedger());
+
+		return "ledger";
+	}
+
+	@GetMapping("/itemstocktracking")
+	public String stockAllTranscation(Model model) {
+
+		List<Product> productList = productService.allProducts();
+		model.addAttribute("productList", productList);
+		model.addAttribute("storeList", storeService.getAllStoreList());
+		model.addAttribute("stockLedger", new StockLedger());
+		return "itemstocktracking";
+	}
+
+	/* stock tracking */
+	@PostMapping("/stocktracking")
+	public String stocktracking(@ModelAttribute("stockLedger") StockLedger stockLedger, Model model) {
+		double closingStock = transactionHeadService.formDate(stockLedger.getProductId(), stockLedger.getStoreId(),
+		stockLedger.getFromDate());	
+		model.addAttribute("closingStock",closingStock);
+
+		List<ResponseStockTracking> responseList = transactionHeadService.stockTracking(stockLedger);
+		model.addAttribute("responseList", responseList);
+		List<Product> productList = productService.allProducts();
+		model.addAttribute("productList", productList);
+		model.addAttribute("storeList", storeService.getAllStoreList());
+		model.addAttribute("stockLedger", new StockLedger());
+		return "itemstocktracking";
+	}
+
 }
