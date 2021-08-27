@@ -1,5 +1,6 @@
 package com.product.managment.webapp.services.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import com.product.managment.webapp.entities.ResponseFromDate;
 import com.product.managment.webapp.entities.StockLedger;
 import com.product.managment.webapp.entities.TransactionDetail;
 import com.product.managment.webapp.entities.TransactionHead;
+import com.product.managment.webapp.model.ResponseClass;
 import com.product.managment.webapp.repositories.TransactionDetailRepository;
 import com.product.managment.webapp.repositories.TransactionHeadRepository;
 import com.product.managment.webapp.services.TransactionHeadService;
@@ -87,10 +89,14 @@ public class TransactionHeadServiceImpl implements TransactionHeadService {
 			}
 
 	@Override
-	public void betweenDate(Long productId, Long storeId, Date startDate, Date endDate) {
+	public ResponseClass betweenDate(Long productId, Long storeId, Date startDate, Date endDate) {
+	
+		ResponseClass response=new ResponseClass();
+		List<ResponseClass> responseList=new ArrayList<>();
 		
 		double inwardQuantity = 0;
 		double outwardQuantity = 0;
+		
 		List<TransactionHead> txnHead = transactionHeadRepository.findAllWithTransactionDateBetween(startDate,endDate, storeId); 
 		for(TransactionHead txnHeadList: txnHead) {
 			
@@ -100,23 +106,33 @@ public class TransactionHeadServiceImpl implements TransactionHeadService {
 							.getTransactionfromDate(txnHeadList.getId(), productId);
 
 					for (TransactionDetail txnDetail : txnDetailList) {
+						response.setProductName(txnDetail.getProduct().getProductName());
+						
 						outwardQuantity += txnDetail.getQuantity();
 					}
+					response.setSupplierName(txnHeadList.getSupplier().getSupplierName());
+					response.setProductId(productId);
 				} else {
 					List<TransactionDetail> txnDetailList = transactionDetailRepository
 							.getTransactionfromDate(txnHeadList.getId(), productId);
 
 					for (TransactionDetail txnDetail : txnDetailList) {
 						inwardQuantity += txnDetail.getQuantity();
-
+                       
 					}
 
 				}
 				
+				
 		}
+		//response.setOpeningStock(openingStock);
+		response.setOutwardQwantity(outwardQuantity);
+		response.setInwardQuantity(inwardQuantity);
+		response.setClosingStock((inwardQuantity-outwardQuantity));
 		System.out.println(outwardQuantity);
 		System.out.println(inwardQuantity);
 		System.out.println("Net Quantity :" +(inwardQuantity-outwardQuantity));
+		return response;
 	}
 
 	@Override

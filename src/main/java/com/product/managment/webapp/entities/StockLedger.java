@@ -2,17 +2,14 @@ package com.product.managment.webapp.entities;
 
 import java.util.Date;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 public class StockLedger {
 	
 	private Long productId;
 	private Long storeId;
 	
-	@Temporal(TemporalType.DATE)
+	
 	private Date fromDate;
-	@Temporal(TemporalType.DATE)
+	
 	private Date toDate;
 	public Long getProductId() {
 		return productId;

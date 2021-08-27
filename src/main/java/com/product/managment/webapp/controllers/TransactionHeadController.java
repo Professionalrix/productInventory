@@ -1,8 +1,6 @@
 package com.product.managment.webapp.controllers;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +22,7 @@ import com.product.managment.webapp.entities.Stock;
 import com.product.managment.webapp.entities.StockLedger;
 import com.product.managment.webapp.entities.TransactionDetail;
 import com.product.managment.webapp.entities.TransactionHead;
+import com.product.managment.webapp.model.ResponseClass;
 import com.product.managment.webapp.services.ProductService;
 import com.product.managment.webapp.services.StockService;
 import com.product.managment.webapp.services.StoreService;
@@ -191,20 +190,29 @@ public class TransactionHeadController {
 	 }
 	
 	@PostMapping("/stockLedger")
-	public String stockLedgerList(@ModelAttribute("stockLedger")StockLedger stockLedger) {
+	public String stockLedgerList( @ModelAttribute("stockLedger")StockLedger stockLedger,Model model) {
 	//	Date fromDate =  new SimpleDateFormat(stockLedger.getFromDate()).parse(source)
 
-		//transactionHeadService.betweenDate(stockLedger.getProductId(), stockLedger.getStoreId(), new SimpleDateFormat( stockLedger.getFromDate()), new SimpleDateFormat (stockLedger.getToDate()));
 		
 		
-		System.out.println(stockLedger.getProductId());
-		System.out.println(stockLedger.getStoreId());
-		System.out.println(stockLedger.getFromDate());
-		System.out.println(stockLedger.getToDate());
 		
+		ResponseClass response= transactionHeadService.betweenDate(stockLedger.getProductId(), stockLedger.getStoreId(), stockLedger.getFromDate(), stockLedger.getToDate());
+		
+		
+//		System.out.println(stockLedger.getProductId());
+//		System.out.println(stockLedger.getStoreId());
+//		System.out.println(stockLedger.getFromDate());
+//		System.out.println(stockLedger.getToDate());
+		model.addAttribute("response",response);
 	
+		 
+		List<Product> productList= productService.allProducts();
+		model.addAttribute("productList", productList);
+		model.addAttribute("storeList", storeService.getAllStoreList());
 		
-		return "redirect:/ledger";
+		model.addAttribute("stockLedger", new StockLedger());
+		
+	return "ledger";
 	}
 	
 	
