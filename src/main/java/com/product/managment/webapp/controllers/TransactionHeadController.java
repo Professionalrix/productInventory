@@ -223,6 +223,8 @@ public class TransactionHeadController {
 	public String stocktracking(@ModelAttribute("stockLedger") StockLedger stockLedger, Model model) {
 		double closingStock = transactionHeadService.formDate(stockLedger.getProductId(), stockLedger.getStoreId(),
 		stockLedger.getFromDate());	
+		model.addAttribute("response",transactionHeadService.betweenDate(stockLedger.getProductId(),stockLedger.getStoreId(),stockLedger.getFromDate(),stockLedger.getToDate()));
+		
 		model.addAttribute("closingStock",closingStock);
 
 		List<ResponseStockTracking> responseList = transactionHeadService.stockTracking(stockLedger);

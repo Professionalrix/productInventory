@@ -48,7 +48,6 @@
 			</div>
 			
 		</div>
-		
 		</form:form>
 	</div>
 	<!-- stock ledger -->
@@ -69,8 +68,9 @@
                     <td></td>
                     <td></td>
                     <td><strong>Opening Stock</strong></td>
-                    <td>${closingStock}</td>
-                    	
+                    <td></td>
+                   <td></td>
+                    <td>${closingStock}</td><td></td>
                     </tr>
                     <c:forEach items="${responseList}" var="response">
                     <tr >
@@ -79,12 +79,21 @@
                      <td>${response.unit} </td>
                     <td>${response.inQuantity}</td>
                     <td>${response.outQuantity}</td>
+                    <td>${response.balQuantity}</td>
                     <td>${response.transcationType}</td>
+            
+                  
                     <%-- <td>${response.closingStock}</td> --%>
                   	<!-- <td>Null</td> -->
                   	<%-- <td>${response.supplierName}</td> --%>
                   </tr>
                   </c:forEach>
+                  <tr>
+                  	<td></td><td></td>
+                  	<td><strong>Total</strong></td>
+                  	<td><strong>${response.totalInward}</strong></td>
+                  	<td><strong>${response.totalOutward}</strong></td>	<td></td><td></td>
+                  </tr>
                 </tbody>
               </table>
 		</div>

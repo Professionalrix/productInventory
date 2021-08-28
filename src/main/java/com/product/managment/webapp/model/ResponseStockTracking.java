@@ -10,12 +10,15 @@ public class ResponseStockTracking {
 	@Temporal(TemporalType.DATE)
 	private Date transactionDate;
 	private Long transactionNo;
-	private String productName;
-	private Double inQuantity;
+	
+	private double inQuantity;
 	private double outQuantity;
 	private String unit;
 	private double balQuantity;
 	private String transcationType;
+	private double totalInQuantity;
+	private double totalOutQuantity;
+	private double totalBalQuantity;
 	public Date getTransactionDate() {
 		return transactionDate;
 	}
@@ -28,12 +31,7 @@ public class ResponseStockTracking {
 	public void setTransactionNo(Long transactionNo) {
 		this.transactionNo = transactionNo;
 	}
-	public String getProductName() {
-		return productName;
-	}
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
+	
 	
 	public Double getInQuantity() {
 		return inQuantity;
@@ -68,22 +66,28 @@ public class ResponseStockTracking {
 	public ResponseStockTracking() {
 		
 	}
-	public ResponseStockTracking(Date transactionDate, Long transactionNo, String productName, 
-			double outQuantity, String unit, String transcationType) {
-		super();
-		this.transactionDate = transactionDate;
-		this.transactionNo = transactionNo;
-		this.productName = productName;
-		
-		this.outQuantity = outQuantity;
-		this.unit = unit;
-		
-		this.transcationType = transcationType;
+	public void setInQuantity(double inQuantity) {
+		this.inQuantity = inQuantity;
+	}
+	public double getTotalInQuantity() {
+		return totalInQuantity;
+	}
+	public void setTotalInQuantity(double totalInQuantity) {
+		this.totalInQuantity = totalInQuantity;
+	}
+	public double getTotalOutQuantity() {
+		return totalOutQuantity;
+	}
+	public void setTotalOutQuantity(double totalOutQuantity) {
+		this.totalOutQuantity = totalOutQuantity;
+	}
+	public double getTotalBalQuantity() {
+		return totalBalQuantity;
+	}
+	public void setTotalBalQuantity(double totalBalQuantity) {
+		this.totalBalQuantity = totalBalQuantity;
 	}
 	
-	
-	
-	
-					
+				
 
 }
